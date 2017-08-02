@@ -11,4 +11,5 @@ tagline: "I don't know what this is."
 `Email`: ybbs.daans@hotmail.com
 
 #### Theme:
-Theme by [Gravity](http://github.com/hemangsk/Gravity)
+Original by [Gravity](http://github.com/hemangsk/Gravity).
+I have modified it a little bit.
