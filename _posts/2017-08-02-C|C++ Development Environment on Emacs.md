@@ -1,6 +1,7 @@
 ---
 layout: post
 title: C|C++ Development Environment on Emacs
+category: Emacs
 ---
 
 # Table of Contents #

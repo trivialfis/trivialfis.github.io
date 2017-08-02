@@ -18,9 +18,9 @@ $text-color:       #111;
 $background-color: #fdfdfd;
 $brand-color:      #2a7ae2;
 
-$grey-color:       #828282;
-$grey-color-light: lighten($grey-color, 40%);
-$grey-color-dark:  darken($grey-color, 25%);
+$grey-color:       #181818;
+$grey-color-light: lighten($grey-color, 60%);
+$grey-color-dark:  darken($grey-color, 45%);
 
 // Width of the content area
 $content-width:    800px;
@@ -146,7 +146,7 @@ h1, h2, h3, h4, h5, h6 {
  * Links
  */
 a {
-    color: #aaa !important;
+    color: #556b2f !important;
     text-decoration: none;
 
     &:visited {
@@ -702,22 +702,22 @@ pre {
     .nt    { color: #000080 } // Name.Tag
     .nv    { color: #008080 } // Name.Variable
     .ow    { font-weight: bold } // Operator.Word
-    .w     { color: #bbb } // Text.Whitespace
+    .w     { color: #222 } // Text.Whitespace
     .mf    { color: #099 } // Literal.Number.Float
     .mh    { color: #099 } // Literal.Number.Hex
     .mi    { color: #099 } // Literal.Number.Integer
     .mo    { color: #099 } // Literal.Number.Oct
-    .sb    { color: #d14 } // Literal.String.Backtick
-    .sc    { color: #d14 } // Literal.String.Char
-    .sd    { color: #d14 } // Literal.String.Doc
-    .s2    { color: #d14 } // Literal.String.Double
-    .se    { color: #d14 } // Literal.String.Escape
-    .sh    { color: #d14 } // Literal.String.Heredoc
-    .si    { color: #d14 } // Literal.String.Interpol
-    .sx    { color: #d14 } // Literal.String.Other
+    .sb    { color: #ff8c00 } // Literal.String.Backtick
+    .sc    { color: #ff8c00 } // Literal.String.Char
+    .sd    { color: #ff8c00 } // Literal.String.Doc
+    .s2    { color: #ff8c00 } // Literal.String.Double
+    .se    { color: #ff8c00 } // Literal.String.Escape
+    .sh    { color: #ff8c00 } // Literal.String.Heredoc
+    .si    { color: #ff8c00 } // Literal.String.Interpol
+    .sx    { color: #ff8c00 } // Literal.String.Other
     .sr    { color: #009926 } // Literal.String.Regex
-    .s1    { color: #d14 } // Literal.String.Single
-    .ss    { color: #990073 } // Literal.String.Symbol
+    .s1    { color: #ff8c00 } // Literal.String.Single
+    .ss    { color: #7cfc00 } // Literal.String.Symbol
     .bp    { color: #999 } // Name.Builtin.Pseudo
     .vc    { color: #008080 } // Name.Variable.Class
     .vg    { color: #008080 } // Name.Variable.Global
