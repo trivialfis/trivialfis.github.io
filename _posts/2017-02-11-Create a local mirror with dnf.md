@@ -4,7 +4,7 @@ title: Create a local mirror with dnf
 category: Linux
 ---
 
-With the introduction of fedora 25, I need to install the nvidia driver with negativo17's repo. But sadly it doesn't have any mirror around me so the connection always fail and the download speed is what we call a catastrophe. Creating a local repo should be helpful and doing it with dnf is mostly the same with yum(though I have never use yum other than installing software for the server this blog runs on). But the procedure is quite straightforward.
+With the introduction of fedora 25, I need to install the nvidia driver with negativo17's repo. But sadly it doesn't have any mirror around me so the connection always fail and the download speed is what we call a catastrophe. Creating a local repo should be helpful and doing it with dnf is mostly the same with yum. But the procedure is quite straightforward.
 
 
 <a id="org9661a7d"></a>

@@ -10,6 +10,7 @@ category: Emacs
 - [Packages list](#orga12f599)
 - [External requirement](#orgc8c763c)
   - [Optional](#org409d4ec)
+- [Some emacs lisp basic](#org9hdz8p)
 - [Extra code to make life easier](#orgbbfb9db)
 - [Generating compilation database](#orgbd54f0d)
   - [What is compilation database](#orgdd8d1c2)
@@ -101,6 +102,37 @@ Although Emacs can accomplish almost everything with a Turing complete extension
 
 Note that `irony` and `rtags` needs `clang-devel` to work on Fedora since you need to compile it from source. The name of both Emacs packages and system package (external requirement) will have the format like `helm`, `clang`. Since there are only 4 system packages in this tutorial, it should be easy enough to distinguish.
 
+<a id="org9hdz8p"></a>
+
+# Some emacs lisp basic
+Please remember that you don't have to know anything in this section to go through the tutorial, but knowing some basic concept will smooth the hurdle greatly in your future with Emacs.
+
+Comments:
+```emacs-lisp
+; A comment starts with ;
+```
+
+A function named foo without parameter:
+```emacs-lisp
+(defun foo ()
+    ; do stuffs here
+)
+```
+
+A function without name and parameter:
+```emacs-lisp
+(lambda ()
+    ; do stuffs here
+)
+```
+
+Add an anonymous function to a hook, a hook is a list where stores some functions to be run at appropriate time.
+```emacs-lisp
+(add-hook 'c++-mode-hook '(lambda ()
+    ;; do stuffs
+))
+```
+
 
 <a id="orgbbfb9db"></a>
 
@@ -137,14 +169,14 @@ Compilation database is defined by the clang project. A compilation database is 
 [
     {
 	"arguments": [
-	    "c++", 
-	    "-c", 
-	    "-std=c++14", 
-	    "-o", 
-	    "main", 
+	    "c++",
+	    "-c",
+	    "-std=c++14",
+	    "-o",
+	    "main",
 	    "main.cpp"
-	], 
-	"directory": "/home/fis/Workspace", 
+	],
+	"directory": "/home/fis/Workspace",
 	"file": "main.cpp"
     }
 ]
@@ -195,6 +227,14 @@ Now we can configure `irony` with `company`, it's just two more line of code:
 (add-to-list 'company-backends 'company-irony-c-headers)
 ```
 
+You can group the above code into a function and then add it to the `c++-mode-hook`:
+```emacs-lisp
+(add-hook 'c++-mode-hook #'(lambda ()
+;;	...code here...
+	))
+```
+There you have it:
+![img]({{ site.url }}/assets/C|C++-Development-Environment-on-Emacs/company.png)
 
 <a id="orga9d8d5b"></a>
 
@@ -492,18 +532,68 @@ Please note that you can get much more than the stuff in the screenshot. But it 
 
 ## RealGUD
 
-RealGUD is a package that support multiple debuggers, you can refer to the official github repo via this [link](https://github.com/realgud/realgud/).
+`RealGUD` is a package that support multiple debuggers, you can refer to the official github repo via this [link](https://github.com/realgud/realgud/).
 
 
 <a id="org4d0da4c"></a>
 
 # Project
 
-Projectile with cmake-ide.
+`Projectile` is a general project management tool. But for the purpose of using it for C|C++ development environment, we won't be using lots of its features. Like many other Emacs project aware packages, it makes use of the directory as the project hierarchy. In most of the time, projectile doesn't define projects by itself. Instead, if you are in a directory or sub-directory of which controlled by some VCS or build systems, it will recognize it as a project. The list of supported of supported systems is followed:
 
+- git
+- mercurial
+- darcs
+- bazaar
+- lein
+- maven
+- sbt
+- scons
+- rebar
+- bundler
+
+You can define create a file named `.projectile` under your project root to control which sub-directors or files should be included in the project and vice verse.
+
+To exclude sub-directors (files) from project, enter the name of it in `.projectile` like this:
+```
+-/log
+-/tmp
+-/vendor
+-/public/uploads
+-tmp
+-*.rb
+-*.yml
+-models
+```
+Note that any other file (sub-directors) not in the above list will be included into the project.
+
+You can do the opposite like:
+```
++/src/foo
++/tests/foo
+```
+In this case, all the files (sub-directors) not in the list will be excluded.
+
+To invoke it, do `M-x RET projectile-mode RET`
+
+So, why do we need a separated project while we already have stuffs like `cmake-ide`? For one thing, if you have multiple projects at hand, a general management tool would be convenient. For another, it comes with a particular handy feature -- jumping between ".h" and ".cpp" files.
+
+Here is some key bindings and the brief description:
+```
+C-c p 4 a 	Switch between files with the same name but different extensions in other window.
+C-c p 4 f 	Jump to a project's file using completion and show it in another window.
+C-c p s g 	Run grep on the files in the project.
+C-c p e 	Shows a list of recently visited project files.
+```
+Other than these, if you were attracted by the concept of general project management, don't miss the [official documentation](http://projectile.readthedocs.io/en/latest/).
 
 <a id="org2954831"></a>
 
 # Summary
 
-For Emacs, I doubt that there are real experts. I can write some simple lisp code. I have read part of the Emacs source and helped debugging some packages for others but I am still a rookie. However, as you might have noticed, hacking into it is always fun. For the purpose of this tutorial, you might need something more powerful and flexible or you might just want some casual coding. You can always add your own configuration or ignore some of the features provided by various packages. And most importantly, all the Emacs documentation can be accessed locally via `M-x info` or `C-h i`. And all packages I have mentioned have proper documentation, you can find them at their respective repositories.
+For Emacs, I doubt that there are many real experts. I can write some simple lisp code, have read part of the Emacs source and helped debugging some packages for others but I am still a rookie. However, as you might have noticed, hacking into it is always fun. For the purpose of this tutorial, you might need something more powerful and flexible or you might just want some casual coding. You can always add your own configuration or ignore some of the features provided by various packages. And most importantly, all the Emacs documentation can be accessed locally via `M-x info` or `C-h i`. And all packages I have mentioned have proper documentation, you can find them at their respective repositories.
+
+<!--  LocalWords:  bundler rebar scons sbt lein darcs VCS cmake cpp
+ -->
+<!--  LocalWords:  Srefactor img RealGUD github
+ -->
