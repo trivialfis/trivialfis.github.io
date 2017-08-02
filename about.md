@@ -9,7 +9,3 @@ tagline: "I don't know what this is."
 `Name` : Trivialfis
 
 `Email`: ybbs.daans@hotmail.com
-
-#### Theme:
-Original by [Gravity](http://github.com/hemangsk/Gravity).
-I have modified it a little bit.

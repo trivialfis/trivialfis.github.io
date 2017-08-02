@@ -15,6 +15,7 @@ twitter_username:
 github_username:  trivialfis
 paginate: 5
 
-plugins: [jekyll-paginate, kramdown]
+# jekyll-paginate
+plugins: [kramdown, jekyll-feed]
 # Build settings
 markdown: kramdown
