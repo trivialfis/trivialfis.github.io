@@ -17,6 +17,12 @@ github_username:  trivialfis
 paginate: 5
 
 # jekyll-paginate
-plugins: [kramdown, jekyll-feed, jekyll-seo-tag, jekyll-sitemap]
+# plugins: [kramdown, jekyll-feed, jekyll-seo-tag, jekyll-sitemap]
+gems:
+    - jekyll-feed
+    - kramdown
+    - jekyll-seo-tag
+    - jekyll-sitemap
+    - jekyll-paginate
 # Build settings
 markdown: kramdown
