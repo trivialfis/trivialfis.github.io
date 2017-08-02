@@ -1,7 +1,8 @@
 ---
 layout: post
-title: C|C++ Development Environment on Emacs
+title: C|C++ Development Environment for Emacs
 category: Emacs
+description: A tutorial to help you set up Emacs for Modern C++ Integrated Development Environment (IDE).
 ---
 
 # Table of Contents #
@@ -234,7 +235,7 @@ You can group the above code into a function and then add it to the `c++-mode-ho
 	))
 ```
 There you have it:
-![img]({{ site.url }}/assets/C|C++-Development-Environment-on-Emacs/company.png)
+![company]({{ site.url }}/assets/C|C++-Development-Environment-on-Emacs/company.png "Emacs IDE company")
 
 <a id="orga9d8d5b"></a>
 
@@ -271,7 +272,7 @@ Just add this function to Emacs's `prog-mode-hook` with the following line of co
 You can use the default key binding `C-c ! l` or use `M-x flycheck-list-errors` to display all errors in a buffer. Another way to do the same thing is via tool bar `<Tools> <Syntex Checking> <Show all errors>`. The above code would make the window displaying all errors persistence, which means it won't affected by windows manipulation commands like `delete-other-windows` ( `C-x 1` ). Other than this, it will also ask `flycheck` not to display error message in echo area while the **Flycheck errors** buffer is displayed.
 
 All in all, your Emacs should look something like this:
-![img]({{ site.url }}/assets/C|C++-Development-Environment-on-Emacs/flycheck.png)
+![flycheck]({{ site.url }}/assets/C|C++-Development-Environment-on-Emacs/flycheck.png "Emacs IDE flycheck")
 
 <a id="org37d8b53"></a>
 
@@ -285,7 +286,7 @@ All in all, your Emacs should look something like this:
 
 Here is a screenshot:
 
-![img]({{ site.url }}/assets/C|C++-Development-Environment-on-Emacs/eldoc_summary.png)
+![eldoc]({{ site.url }}/assets/C|C++-Development-Environment-on-Emacs/eldoc_summary.png "Emacs IDE symbol summary")
 <a id="orgb32fc19"></a>
 
 ## As a whole
@@ -488,7 +489,7 @@ For adding functions to hook:
 
 The canonical code browser for Emacs is the `ECB` package which is a short hand for `Emacs code browser`. It's a powerful code browsing tool and a part of `CEDET`. It can display C++ classes, variables and functions in a structural manner. But it also relies on the semantic package to work properly. You can activate it by calling `ecb-activate`, and use `ecb-toggle-layout` to switch windows layout. The switching function is bind to `C-c . l t` by default which is quite long for something called "shortcut". You can bind it to whatever you want. I myself just use `M-x` and call the function thinks to the convenience brought by `helm`. Just like any other packages provided by `CEDET`, `ECB` has `info` documentation in Emacs, use `C-h i` to check it out.
 
-![img]({{ site.url }}/assets/C|C++-Development-Environment-on-Emacs/flycheck_ecb.png)
+![ecb]({{ site.url }}/assets/C|C++-Development-Environment-on-Emacs/flycheck_ecb.png "Emacs IDE ecb")
 One problem of `ECB` is that it has its own windows management system, which doesn't get along with .. , well, any other windows. I copied some code from `flycheck`'s doc to make the **flycheck errors** buffer to be independent from other windows operations. One way to make the flycheck buffer work with ecb is use my configuration and open flycheck error buffer before activating `ECB`.
 
 
@@ -505,7 +506,7 @@ There is no doubt that clang indeed is a powerful and flexible compiler frontend
 
 There are many people who doesn't like C/C++. One of the many reasons is that you need to understand some low level properties of the language and sometimes you need to figure out how the compiler works. But from my point of view, it never hurts to know more about these black boxes. On Emacs, there is a convenient package to help you checkout what happens to your code during compilation and that is `disaster`. It works by compiling your file to object first and then disassemble the object file back into assembly code using system command `objdump`. You can call the function `disaster` using `M-x disaster` to do the trick. I prefer to bind it to `"C-c d a"`. Here is a screenshot after calling `disaster`:
 
-![img]({{ site.url }}/assets/C|C++-Development-Environment-on-Emacs/disaster.png)
+![disaster]({{ site.url }}/assets/C|C++-Development-Environment-on-Emacs/disaster.png "Emacs IDE disassemble")
 As you can see, `disaster` will display your disassembled code in a split window. Not only that, in the assembly buffer, `disaster` will jump to the line corresponding to where you place your cursor in C++ buffer and highlight that line. In this case, I place my cursor under `#include` directive and the corresponding line in assembly buffer got highlighted.
 
 One thing to note about that is the function needs to compile your code first. So you can't do the trick to your "dirty file" which isn't ready for compilation. If the compilation process failed, it will just display a error message.
@@ -524,8 +525,8 @@ Many people stick with IDE for its full blown GUI debugging facility. Actually y
 
 [GDB Graphical Interface](https://www.gnu.org/software/emacs/manual/html_node/emacs/GDB-Graphical-Interface.html#GDB-Graphical-Interface) A simple screenshot for it:
 
-![img]({{ site.url }}/assets/C|C++-Development-Environment-on-Emacs/gdb.png)
-Please note that you can get much more than the stuff in the screenshot. But it might take you some time to configure it.
+![gdb]({{ site.url }}/assets/C|C++-Development-Environment-on-Emacs/gdb.png "Emacs IDE debugging")
+Please note that you can get much more than the stuffs in the screenshot. But it might take you some time to configure it.
 
 
 <a id="org44c60c5"></a>
@@ -595,5 +596,7 @@ For Emacs, I doubt that there are many real experts. I can write some simple lis
 
 <!--  LocalWords:  bundler rebar scons sbt lein darcs VCS cmake cpp
  -->
-<!--  LocalWords:  Srefactor img RealGUD github
+<!--  LocalWords:  Srefactor img RealGUD github IDE flycheck ecb
+ -->
+<!--  LocalWords:  eldoc
  -->

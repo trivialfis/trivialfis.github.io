@@ -8,14 +8,15 @@
 # Site settings
 title: Trivial Fis
 email: ybbs.daans@hotmail.com
-description: Still trying to figure out this theme.
+description: Computer science
+author: trivialfis
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://trivialfis.github.io" # the base hostname & protocol for your site
-twitter_username: 
+twitter_username: ""
 github_username:  trivialfis
 paginate: 5
 
 # jekyll-paginate
-plugins: [kramdown, jekyll-feed]
+plugins: [kramdown, jekyll-feed, jekyll-seo-tag, jekyll-sitemap]
 # Build settings
 markdown: kramdown
