@@ -9,3 +9,5 @@ tagline: "I don't know what this is."
 `Name` : Trivialfis
 
 `Email`: ybbs.daans@hotmail.com
+
+`My original blog`: trivialfis.net
