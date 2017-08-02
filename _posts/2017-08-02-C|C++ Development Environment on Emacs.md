@@ -539,7 +539,7 @@ Please note that you can get much more than the stuff in the screenshot. But it 
 
 # Project
 
-`Projectile` is a general project management tool. But for the purpose of using it for C|C++ development environment, we won't be using lots of its features. Like many other Emacs project aware packages, it makes use of the directory as the project hierarchy. In most of the time, projectile doesn't define projects by itself. Instead, if you are in a directory or sub-directory of which controlled by some VCS or build systems, it will recognize it as a project. The list of supported of supported systems is followed:
+`Projectile` is a general project management tool. But for the purpose of using it for C/C++ development environment, we won't be using lots of its features. Like many other Emacs project aware packages, it makes use of the directory as the project hierarchy. In most of the time, projectile doesn't define projects by itself. Instead, if you are in a directory or sub-directory of which controlled by some VCS or build systems, it will recognize it as a project. The list of supported of supported systems is followed:
 
 - git
 - mercurial
