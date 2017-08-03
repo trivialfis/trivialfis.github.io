@@ -6,13 +6,17 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 # Site settings
+
 title: Trivial Fis
 email: ybbs.daans@hotmail.com
-description: Computer science
+description: Mumbling about Linux, Emacs, Machine Learning, and most importantly, computer science.
 author: trivialfis
+logo: /favicon.ico
+lang: en_US
+
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://trivialfis.github.io" # the base hostname & protocol for your site
-twitter_username: ""
+
 github_username:  trivialfis
 google_analytics: UA-104056626-1
 paginate: 10
@@ -23,6 +27,7 @@ plugins:
     - jekyll-seo-tag
     - jekyll-sitemap
     - jekyll-paginate
+
 
 # Build settings
 markdown: kramdown

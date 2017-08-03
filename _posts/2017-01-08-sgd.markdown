@@ -1,0 +1,476 @@
+---
+layout: page
+---
+Introduction
+============
+
+Here I will try to explain the back-propagation algorithm for multilayer
+perceptions neural networks. When the network expands to multilayer, we
+will need some new learning rules, and the surface of performance
+measuring function would be different. The most appreciated method for
+multilayer network is back-propagation. As in my understanding,
+back-propagation is a name for many different algorithms who also shares
+a great deal of common. The back-propagation introduced here is one
+basic type for fully connected neural networks, which is called steepest
+gradient descent.
+
+Basic notation
+==============
+
+We define a scalar \\(a\\) to be the output of a activation function, which
+means \\(a\\) will be the output of that neuron. And the vector
+$\mathbf{a}^m$ to be the output vector of layer \\(m\\).
+{% raw %}
+$$\mathbf{a}^m = f(\mathbf{W}^m\mathbf{a}^{m-1}+\mathbf{b}^m) \label{act}$$ 
+{% endraw %}
+But this kind of expression is cumbersome, we are not going to write down an
+expression to represent the function input every time. Now we define the
+*weighted input* \\(\mathbf{n}\\) to be the input vector of activation
+function.
+{% raw %}
+$$
+	\mathbf{n}^m = \mathbf{W}^m\mathbf{a}^{m-1}+\mathbf{b}^m
+$$
+{% endraw %}
+Which comes into
+{% raw %}
+$$
+\mathbf{a}^m = f^m(\mathbf{n}^m)
+$$
+{% endraw %}
+
+Before we can go any further, I will try to explain some meanings of all
+these variables.\
+$w^m_{jk}$ is the weight that connects $k^{th}$ neuron in $(m-1)^{th}$
+layer to the $j^{th}$ neuron in the $m^{th}$ layer\
+$b^m_j$ and $a^m_j$ are associated with the $j^{th}$ neuron in $m^{th}$
+layer.\
+
+At the first glance, the notation is weird, why would anybody put $j$
+before $k$ in the matrix entry index? They represent the reversed order
+layer! Don’t worry, I will explain it now. To do that, I need to write
+down the following equation first, which can be easily configured from
+the matrix equation . $$a^m_j = f(\sum_k w^m_{jk}a^{m-1}_k + b^m_j)$$ In
+the above equation, $a^{m-1}_k$ represents the output of the $k^{th}$
+neuron of the $(m-1)^{th}$ layer and $a^m_j$ represents the output of
+the $j^{th}$ neuron in $m^{th}$ layer. The equation sum over
+$w^m_{jk}a^{m-1}_k$ according to $k$, that’s why we claim that the
+weight $w^m_{jk}$ connects that two specific neuron, just as Figure
+\[fig:weightConnectsTwoNeuron\] shows.
+
+![Weight connects two neuron[]{data-label="fig:weightConnectsTwoNeuron"}](weight.eps)
+
+And just to make it even more clear, a neuron in the current layer can
+be connected with all neuron in the previous layer by different weights.
+Also, the weird notation now’s reasonable since $w^m_{jk}$ also means
+the entry in $i$ row and $j$ column of weight matrix $\mathbf{W}^m$ of the
+$m^{th}$ layer.
+
+Cost function
+=============
+
+For supervise learning, we need a cost function as the learning
+performance measurement. So, what exactly is the cost function for a
+neural network? As you can see, how the network performs relies on the
+weights and the biases, so what we can do is adjusting it’s weights and
+biases. And how can we measure the performance of the network? That’s
+even easier, the only thing we need to do is comparing the network’s
+actual outputs to the desired outputs. Let’s define $\mathbf{t}$ to be
+the desired output vector of the network, and $\mathbf{a}^M$ to be the
+actual output vector of the network, in most of the time, we call
+$\mathbf{a}^M$ the activation output of the network’s output layer. Also
+we let $\mathbf{d}$ represent the input vector of the network, which is
+the data we put into the network. For each training data, we have a
+tuple which combines the input vector \\(d\\) and the desired output \\(t\\)
+{% raw %}
+$$
+\{\mathbf{d}_{(1)},\mathbf{t}_{(1)}\}, \{\mathbf{d}_{(2)}, \mathbf{t}_{(2)}\}, \cdots, \{\mathbf{d}_{(n)}, \mathbf{t}_{(n)}\}
+$$
+{% endraw %}
+The indexes represent the first input data, the second, $\cdots$, then
+the last one. Also, we define the dimension of the input vector $R$, so,
+those vector’s shape are $(R \times 1)$. Every time the network takes an
+input from training data set $\mathbf{d}_{(i)}$ and returns a result,
+which is $\mathbf{a}^M_{(i)}$, we compare it with the desired output
+$\mathbf{t}_{(i)}$, then we will know how’s the network doing it’s job.
+The difference in between desired output and actual output is called
+*error*, which is defined as $$\mathbf{e} = \mathbf{t} - \mathbf{a}^M$$
+With the purpose of generality in mind, we will omit the subscript of
+the vector in latter section, this won’t effect our calculation since we
+will focus on how the network learns from each single data. After
+defining the error, we can have our cost function, as explained earlier,
+the cost function is better considered as the function over network’s
+weights and biases. The notation we will use for it is \\(C(\mathbf{W}, \mathbf{b})\\)
+{% raw %}
+$$
+\begin{aligned}
+    C(\mathbf{W}, \mathbf{b}) &= (\mathbf{t}-\mathbf{a}^M)^T (\mathbf{t}-\mathbf{a}^M)\\
+    &= \mathbf{e}^T\mathbf{e}
+  \end{aligned}
+$$
+{% endraw %}
+Sometime, lazy people like me would like to omit the
+weights and biases in cost function’s notation, make the cost function
+just $C$. $$C = \mathbf{e}^T\mathbf{e}$$ I hope it won’t confuse you.
+
+The general update rule
+=======================
+
+The most basic update rule of weights and biases, multilayer networks
+are the same as other perception networks $$\begin{aligned}
+    \mathbf{W}^m(k+1) &= \mathbf{W}^m(k) + \alpha \Delta \mathbf{W}\\
+    \mathbf{b}^m(k+1) &= \mathbf{b}^m(k) + \alpha \Delta \mathbf{b}
+  \end{aligned}$$ It’s important that how we calculate the
+$\Delta \mathbf{W}$ and $\Delta \mathbf{b}$.\
+
+Considering the cost function $C$ as the function over weights and
+biases, what we want is to minimize this function(and that’s why we call
+it cost function, who wouldn’t want to minimize something has the word
+“cost” in its name?). Smart scientists have found some methods to update
+the weights and biases by iteration to achieve our gold. Here we explore
+the basic one called steepest gradient descent(SGD). There are other way
+to achieve the same gold, and may do a even better job at the
+performance. But understanding the SGD would be helpful for us to learn
+other kind of algorithms. The general update rules of SGD are the
+following equations: $$\begin{aligned}
+    \mathbf{W}^m(k+1) &= \mathbf{W}^m(k) + \alpha(k) \mathbf{p}^m(k)\\
+    \mathbf{b}^m(k+1) &= \mathbf{b}^m(k) + \alpha(k) \mathbf{p}^m(k)
+  \end{aligned}$$ Here we choose $\Delta \mathbf{W}$ and
+$\Delta \mathbf{b}$ to be $\mathbf{p}$ which represents the moving
+direction of $\mathbf{W}$ and $\mathbf{b}$.\
+Now we define $\mathbf{g} : \nabla C$ as the gradient of the cost
+function over weights and biases.
+
+For the gradient of a matrix, we apply the derivative element wise. For
+example $k(\mathbf{x})$ is a function whose domain is $r$ dimension vector
+space, then it’s gradient would look like this $$\nabla \mathbf{k} =
+  \begin{bmatrix}
+    &\frac{\partial k}{\partial x_1}\\
+    &\frac{\partial k}{\partial x_2}\\
+    &\vdots\\
+    &\vdots\\
+    &\frac{\partial k}{\partial x_n}\\
+  \end{bmatrix}$$ From calculus we know that the direction of the
+gradient is the fastest growing direction of the function, so we can
+choose $\mathbf{p}$ easily, that’s the reversed direction of the gradient:
+$$\mathbf{p_k} = \mathbf{-g_k}$$ Now we have: $$\begin{aligned}
+    \mathbf{W}^m(k+1) &= \mathbf{W}^m(k)-\alpha \mathbf{g}^m(k)\\
+    \mathbf{b}^m(k+1) &= \mathbf{b}^m(k)-\alpha \mathbf{g}^m(k)
+  \end{aligned}$$ Some time we can get more clarity by getting out of
+the matrix form. So we can rewrite the above equation as:
+$$\begin{aligned}
+    w^m_{ij}(k+1) &= w^m(k)-\alpha \frac{\partial C}{\partial w^m_{ij}}\\
+    b^m_i(k+1) &= b^m(k) - \alpha \frac{\partial C}{\partial b^m_i}
+  \end{aligned}$$ For the partial derivative part, we can obtain the
+following equations by applying the chain rule: $$\begin{aligned}
+    \frac{\partial C}{\partial w^m_{ij}} = \frac{\partial C}{\partial n^m_i}\cdot \frac{\partial n^m_i}{\partial w^m_{ij}}\\
+    \frac{\partial C}{\partial b^m_i} = \frac{\partial C}{\partial n^m_i}\cdot \frac{\partial n^m_i}{\partial b^m_i} \label{gri}
+  \end{aligned}$$ In the matrix form, it would be $$\begin{aligned}
+    \frac{\partial C}{\partial \mathbf{W}^m} &= \frac{\partial C}{\partial \mathbf{n}^m} \cdot \frac{\partial \mathbf{n}^m}{\partial \mathbf{W}^m}\\
+    \frac{\partial C}{\partial \mathbf{b}^m} &= \frac{\partial C}{\partial \mathbf{n}^m} \cdot \frac{\partial \mathbf{n}^m}{\partial \mathbf{b}^m} \label{gpd}
+  \end{aligned}$$ Before we go into further calculation, we might be
+better off stating out the shape of weight matrices in all layers.
+Defining the input vector size is of $R$, then the first weight matrix
+is of shape $(S^1 \times R)$, and the second one is of size
+$(S^2 \times S^1)$ $\cdots$ $(S^M \times S^{M-1})$ where the upper $M$
+represents the last layer. And the activation vector in $m^{th} $ layer
+$\mathbf{a}^m$ is of size $S^m$. If you don’t think this is obvious, then
+you can draw some empty brackets to simulate the matrices and check.\
+First we choose the easy part to get start, which is the term
+$\frac{\partial n^m_i}{\partial w^m_{ij}}$ in the right most part of the
+. Let’s rewrite the equation for the weighted input in scalar form
+$$n^m_i = \sum^{S^{m-1}}_{j=1}w^m_{ij}a^m_j+b^m_i$$ By observing the
+rewritten weighted input equation, we can see that most of the weights
+can be removed by the derivative, then we have:
+$$\frac{\partial n^m_i}{\partial w^m_{ij}} = a^{m-1}_j \label{papw}$$
+Similar happens to the biases:
+$$\frac{\partial n^m_i}{\partial b^m_i} = 1$$
+
+Sensitive
+=========
+
+Definition
+----------
+
+Let’s define the sensitive of a $i^{th}$ neuron in the $m^{th}$ layer to
+be:
+$$S^m_i = \frac{\partial C}{\partial n^m_i} \label{sensitiveScaler}$$ In
+the matrix form ,it looks like this
+$$\mathbf{S}^m=\frac{\partial C}{\partial \mathbf{n}^m} =
+  \begin{bmatrix}
+    &\frac{\partial C}{\partial n^m_1}\\
+    &\frac{\partial C}{\partial n^m_2}\\
+    &\vdots\\
+    &\vdots\\
+    &\frac{\partial C}{\partial n^m_{S^m}}
+  \end{bmatrix}$$ The sensitive is a part of . Defining it would ease
+our calculation, but more importantly, we need to know it’s role in the
+over all algorithm and the origin of it’s name. Since sensitive is the
+result of a derivative, it can be considered as the slope of the cost
+function surface over the weighted input. When $S$ is large, the surface
+is steep, then adding $\Delta \mathbf{W}$ would cause the surface change
+rapidly. Then we consider the neural network is learning fast. On the
+other hand, when the $S$ is minor, the network will slow down it’s
+learning speed. So the value of the sensitive can be considered as how
+sensitive the network responding to a particular training data. And
+that’s why it got this name.Some other books refer it as the error, but
+since it would be confusing that $\mathbf{t}-\mathbf{a}^M$ also named error.
+So we will keep using the term sensitive for $\mathbf{S}$.
+
+In hidden layers
+----------------
+
+Now we can rewrite the by combining equation and equation and get:
+$$\begin{aligned}
+    \frac{\partial C}{\partial w^m_{ij}} &= S^m_ia^{m-1}_j\\
+    \frac{\partial C}{\partial b^m_i} &= S^m_i
+  \end{aligned}$$ Then we obtain: $$\begin{aligned}
+    w^m_{ij}(k+1) &= w^m_{ij}(k)-\alpha S^m_ia^{m-1}_j\\
+    b^m_i(k+1) &= b^m_i-\alpha S^m_i
+  \end{aligned}$$ In the matrix form: $$\left.
+    \begin{array}{lr}
+      \mathbf{W}^m(k+1)=\mathbf{W}^m(k)-\alpha \mathbf{S}^m(\mathbf{a}^{m-1})^T\\
+      \mathbf{b}^m(k+1)=\mathbf{b}^m(k)-\alpha \mathbf{S}^m
+    \end{array}
+  \right.$$ Now we can focus on the calculation of sensitive itself.
+Since:
+$$\mathbf{n}^{m+1} = \mathbf{W}^{m+1}f^{m+1}(\mathbf{n}^m)+\mathbf{b}^{m+1}$$ We
+can consider $n^{m+1}$ as an intermediate function of $n^m$, then by
+applying the chain rule we can get:
+$$\mathbf{S}^m=\frac{\partial C}{\partial \mathbf{n}^m} = \frac{\partial C}{\partial \mathbf{n}^{m+1}} \frac{\mathbf{n}^{m+1}}{\partial \mathbf{n}^m} \label{cr}$$
+And obviously we have: $$\frac{\partial C}{\partial \mathbf{n}^{m+1}} =
+  \begin{bmatrix}
+    &\frac{\partial C}{\partial n^{m+1}_1}\\
+    &\frac{\partial C}{\partial n^{m+1}_2}\\
+    &\vdots\\
+    &\vdots\\
+    &\frac{\partial C}{\partial n^{m+1}_{S^{m+1}}}
+  \end{bmatrix}
+  = \mathbf{S}^{m+1} \label{smn}$$ Now we can further simplify the by
+substituting
+$$\mathbf{S}^m = (\frac{\partial \mathbf{n}^{m+1}}{\partial \mathbf{n}^m})^T \cdot \mathbf{S}^{m+1} \label{sen}$$
+Actually we can write it in the reversed order:
+$$\mathbf{S}^m = (\mathbf{S}^{m+1})^T \cdot \frac{\partial \mathbf{n}^{m+1}}{\partial \mathbf{n}^m}$$
+But this will give us a row vector, what we want and get used to is
+column vector.\
+Now it’s clear that what we really need to attack is the term
+$\partial \mathbf{n}^{m+1} / \partial \mathbf{n}^m$. As usual, we will start
+calculating in the scalar form and then get back to the matrix form.
+$$\begin{aligned}
+    \mathbf{n}^{m+1} &= \mathbf{W}^{m+1}\mathbf{a}^m+\mathbf{b}^{m+1}\\
+    &=
+    \begin{bmatrix}
+      &w^{m+1}_{1,1} &\cdots &w^{m+1}_{1,S^m}\\
+      &\vdots &\quad &\vdots\\
+      &w^{m+1}_{S^{m+1},1} &\cdots &w^{m+1}_{S^m, S^{m+1}}\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      &a^m_1\\
+      &\vdots\\
+      &a^m_{S^m}\\
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+      &b^{m+1}_1\\
+      &\vdots\\
+      &b^{m+1}_{S^{m+1}}\\
+    \end{bmatrix}
+  \end{aligned}$$ By observing the above matrices, we can easily obtain:
+$$\begin{aligned}
+    \frac{\partial n^{m+1}_i}{\partial n^m_j} &= \frac{\partial(\sum^{S^m}_{l=1}w^{m+1}_{i,l}a^m_l+b^{m+1}_i)}{\partial n^m_j}\\
+    &=w^{m+1}_{i,j}\frac{\partial a^m_j}{\partial n^m_j}
+  \end{aligned}$$ Because only the term $w^{m+1}_{i,l}a^m_j$ for
+$ (l=j)$ is kept ,the last part of the above equation comes into being.
+And from the definition $a^m_j = f^m(n^m_j)$, we have:
+$$\frac{\partial n^{m+1}_i}{\partial n^m_j}=w^{m+1}_{i,j}\frac{\partial f^m(n^m_j)}{\partial n^m_j}=\dot{f}^m(n^m_j) w^{m+1}_{i,j}$$
+Where $$\dot{f}^m(n^m_j)=\frac{\partial f^m(n^m_j)}{\partial n^m_j}$$
+Then we obtain:
+$$\frac{\partial n^{m+1}_i}{\partial n^m_j}=\dot{f}^m(n^m_j) w^{m+1}_{i,j}\label{nns}$$
+
+Now things separates, $\dot{f}^m(n^m_j)$ can be both expressed as matrix
+form and the vector form, we first start with the matrix form:
+{% raw %}
+$$
+\mathbf{\dot{F}}^m_{matrix}(\mathbf{n}^m)=
+  \begin{bmatrix}
+    &\dot{f}^m(n^m_1) &\quad &\quad &\quad\\
+    &\quad &\dot{f}^m(n^m_2) &\quad &\quad\\
+    &\quad &\quad &\ddots &\quad\\
+    &\quad &\quad &\quad &\dot{f}^m(n^m_{S^m})\\
+  \end{bmatrix}
+$$
+{% endraw %}
+Since both the indexes in denominator and numerator of
+$n^m$ is $j$, $\mathbf{\dot{F}}(\mathbf{n}^m)$ must be a diagonal matrix and
+$\dot{f}^m(n^m_j)$ is in the $j$ row $j$ column of
+$\mathbf{\dot{F}}(\mathbf{n}^m)$.\
+We can write the into the matrix form:
+$$\frac{\partial \mathbf{n}^{m+1}}{\partial \mathbf{n}^m} = \mathbf{\dot{F}}^m_{matrix}(\mathbf{n}^m)\mathbf{W}^{m+1} \label{nnm}$$
+The outcome of the matrix is the famous Jacobian matrix
+$$\frac{\partial \mathbf{n}^{m+1}}{\partial \mathbf{n}^m} =
+  \begin{bmatrix}
+    \frac{\partial \mathbf{n}^{m+1}}{\partial n^m_1} \cdots \cdots \frac{\partial \mathbf{n}^{m+1}}{\partial n^m_{S^m}}
+  \end{bmatrix}
+  =
+  \begin{bmatrix}
+    &\frac{\partial n^{m+1}_1}{\partial n^m_1} &\frac{\partial n^{m+1}_1}{\partial n^m_2} &\cdots &\frac{\partial n^{m+1}_1}{\partial n^m_{S^m}}\\
+    &\frac{\partial n^{m+1}_2}{\partial n^m_1} &\frac{\partial n^{m+1}_2}{\partial n^m_2} &\cdots &\frac{\partial n^{m+1}_2}{\partial n^m_{S^m}}\\
+    &\vdots &\vdots & &\vdots\\
+    &\frac{\partial n^{m+1}_{S^{m+1}}}{\partial n^m_1} &\frac{\partial n^{m+1}_{S^{m+1}}}{\partial n^m_2} &\cdots &\frac{\partial n^{m+1}_{S^{m+1}}}{\partial n^m_{S^m}} 
+  \end{bmatrix}$$ Some people will use the transpose form of the
+Jacobian matrix, but that wouldn’t matter, we will keep it as a row
+vector which contains a bunch of column vectors as entries for the ease
+of calculation. If we expand the entries with equation then we get
+something like this
+$$\frac{\partial \mathbf{n}^{m+1}}{\partial \mathbf{n}^m}=
+  \begin{bmatrix}
+    &w^{m+1}_{1,1}\cdot \dot{f}^m(n^m_1) &w^{m+1}_{1,2}\cdot \dot{f}^m(n_2)^m &\cdots &w^{m+1}_{1,S^m}\cdot \dot{f}^m(n^m_{S^m})\\
+    &w^{m+1}_{2,1}\cdot \dot{f}^m(n^m_1) &w^{m+1}_{2,2}\cdot \dot{f}^m(n_2)^m &\cdots &w^{m+1}_{2,S^m}\cdot \dot{f}^m(n^m_{S^m})\\
+    &\vdots &\vdots & &\vdots\\
+    &w^{m+1}_{S^{m+1},1}\cdot \dot{f}^m(n^m_1) &w^{m+1}_{S^{m+1},2}\cdot \dot{f}^m(n_2)^m &\cdots &w^{m+1}_{S^{m+1},S^m}\cdot \dot{f}^m(n^m_1)\\
+  \end{bmatrix}$$ If it’s confusing to you, you can try to calculate it
+with equation and equation , then you will find these two equations fit
+together.\
+
+After matrix, now we turn to the vector form
+$$\mathbf{\dot{F}}_{vector}^m(\mathbf{n}^m)=
+  \begin{bmatrix}
+    &\dot{f}^m(n^m_1)\\
+    &\dot{f}^m(n^m_2)\\
+    &\vdots\\
+    &\dot{f}^m(n^m_{S^m})\\ 
+  \end{bmatrix} \label{fv}$$
+
+To make use of it, we need to know the *Hadamard Product*, don’t be
+alarmed, it’s even easier than the matrix calculation(otherwise why
+would we need it here?).\
+The Hadamard product is element wise multiplication, here are two
+examples, the $\circ$ denotes the Hadamard product
+
+$$\begin{bmatrix}
+    &a &b\\
+    &c &d\\
+  \end{bmatrix}
+  \circ
+  \begin{bmatrix}
+    &e &f\\
+    &g &h\\
+  \end{bmatrix}
+  =
+  \begin{bmatrix}
+    &ae &bf\\
+    &cg &dh\\
+  \end{bmatrix}$$
+
+And $$\begin{bmatrix}
+    &a\\
+    &b\\
+  \end{bmatrix}
+  \circ
+  \begin{bmatrix}
+    &c\\
+    &d\\
+  \end{bmatrix}
+  =
+  \begin{bmatrix}
+    &ac\\
+    &bd\\
+  \end{bmatrix}$$ We will comeback to this a bit latter.\
+
+Alright, after all these tiresome calculation, we have some
+achievements, revisiting :
+$$\mathbf{S}^m = (\frac{\partial \mathbf{n}^{m+1}}{\partial \mathbf{n}^m})^T \cdot \mathbf{S}^{m+1}$$
+And having , we can express the sensitive as
+$$\mathbf{S}^m = \mathbf{\dot{F}}^m_{matrix}(\mathbf{n}^m)(\mathbf{W}^{m+1})^T\mathbf{S}^{m+1}$$
+Also with the vector expression from equation and Hadamard product, we
+can express the sensitive as
+$$\mathbf{S}^m = \mathbf{\dot{F}}^m_{vector}(\mathbf{n}^m)\circ((\mathbf{W}^{m+1})^T\mathbf{S}^{m+1})$$
+Why on earth do we need the vector form since we have the matrix form
+and we are familiar with dot product? First the vector form doesn’t need
+to use sparse matrix, which might be lower down the requirement of
+matrix implementation. Second, calculating the Hadamard product is
+faster than the dot product since it eliminates all the summing
+operation. But, at time of this very sentence is being written(which is
+2016), there are many math libraries can do all the calculation for us,
+so the vector form is not a must and you can choose whatever form you
+are comfortable with.
+
+From the above equation, we can see where the name back propagation come
+from, each layer’s sensitive can be calculated recursively:
+$$\mathbf{S}^M \rightarrow \mathbf{S}^{M-1} \rightarrow \cdots \rightarrow \mathbf{S}^2 \rightarrow \mathbf{S}^1$$
+
+Output layer
+------------
+
+However, one important step was left, the sensitive $$\mathbf{S}^M$$ of
+the last layer. But hey, the cost function is a quadratic function, it
+wouldn’t take us a minute to figure out it’s derivative:
+{% raw %}
+$$\begin{aligned}
+    S^M_i &= \frac{\partial C}{\partial n^M_i}\\
+    &= \frac{\partial \sum^{S^M}_{i=1}(t_i-a^M_i)^2}{\partial n^M_i}\\
+    &= -2(t_i-a^M_i)\frac{\partial a^M_i}{\partial n^M_i}
+\end{aligned}
+$$
+{% endraw %}
+More over
+$$\frac{\partial a_i}{\partial n^M_i} = \frac{\partial a^M_i}{\partial n^M_i} = \frac{\partial f^M(n^M_i)}{\partial n^M_i} = \dot{f}^M(n^M_i)$$
+Then we have $$S^M_i = -2(t_i-a^M_i)\dot{f}^M(n^M_i)$$ In the matrix
+form
+$$\mathbf{S}^M = -2\mathbf{\dot{F}}^M_M(\mathbf{n}^M)\cdot(\mathbf{t}-\mathbf{a}^M) \label{lastLayerSensitive}$$
+or with the Hadamard product
+$$\mathbf{S}^M = -2\mathbf{\dot{F}}^M_V(\mathbf{n}^M)\circ(\mathbf{t}-\mathbf{a}^M) \label{lastLayerSenVec}$$
+From another perspective, we can apply the chain rule to $\mathbf{S}^M$
+$$\begin{aligned}
+    \mathbf{S}^M &= \frac{\partial C}{\partial \mathbf{n}^m}\\
+    &= \frac{\partial C}{\partial \mathbf{a}^M} \cdot \frac{\partial \mathbf{a}^M}{\mathbf{n}^M}
+  \end{aligned}$$ And if we compare it to , the term
+$\frac{\partial C}{\partial \mathbf{a}^M}$ is actually
+$-2(\mathbf{t} - \mathbf{a}^M)$ with a mask, which describes how fast
+the cost function changes over the output activations, and the second
+term $\frac{\partial \mathbf{a}^M}{\mathbf{n}^M}$ is actually
+$\mathbf{\dot{F}}^M(\mathbf{n}^M)$ by definition, which describes how fast
+the output activations changes over weighted input.
+
+Summary
+=======
+
+Finally, we get all things worked up. Now is time for us to get these equations together. First, we have
+{% raw %}
+$$
+\begin{aligned}
+    \mathbf{W}^m(k+1) &= \mathbf{W}^m(k) + \alpha(k) \mathbf{p}^m(k)\\
+    \mathbf{b}^m(k+1) &= \mathbf{b}^m(k) + \alpha(k) \mathbf{p}^m(k)
+\end{aligned}
+{% endraw %}
+$$ $\mathbf{p}$ is the moving direction of $\mathbf{W}$
+and $\mathbf{b}$. And then we choose $\mathbf{p}$ to be $-\mathbf{g}$
+which is the reversed direction gradient of the cost function over
+$\mathbf{W}$ and $\mathbf{b}$. We have $$\begin{aligned}
+    \mathbf{W}^m(k+1) &= \mathbf{W}^m(k)-\alpha \mathbf{g}^m(k)\\
+    \mathbf{b}^m(k+1) &= \mathbf{b}^m(k)-\alpha \mathbf{g}^m(k)
+  \end{aligned}$$ Which is the same as $$\begin{aligned}
+    \mathbf{W}^m(k+1) &= \mathbf{W}^m(k)-\alpha \frac{\partial C}{\partial \mathbf{W}}\\
+    \mathbf{b}^m(k+1) &= \mathbf{b}^m(k)-\alpha \frac{\partial C}{\partial \mathbf{b}}
+  \end{aligned}$$ Then the gradient can be expressed as sensitive
+$$\begin{aligned}
+    \frac{\partial C}{\partial \mathbf{W}} &= \mathbf{S}^m\mathbf{a}^{m-1}\\
+    \frac{\partial C}{\partial \mathbf{b}} &= \mathbf{S}^m
+  \end{aligned}$$ The sensitives in hidden layers can be calculated by
+$$\mathbf{S}^m = \mathbf{\dot{F}}^m_M(\mathbf{n}^m) (\mathbf{W}^{m+1})^T\mathbf{S}^{m+1}$$
+or
+$$\mathbf{S}^m = \mathbf{\dot{F}}^m_V(\mathbf{n}^m) \circ ((\mathbf{W}^{m+1})^T\mathbf{S}^{m+1})$$
+In the output layer, it can be calculated by
+$$\mathbf{S}^M = -2\mathbf{\dot{F}}^M_M(\mathbf{n}^M) \cdot (\mathbf{t}-\mathbf{a}^M)$$
+or
+$$\mathbf{S}^M = -2\mathbf{\dot{F}}^M_V(\mathbf{n}^M)\circ(\mathbf{t}-\mathbf{a}^M)$$
+And in combined form
+$$\begin{aligned}
+    \Delta \mathbf{W} &= \mathbf{S}^m\mathbf{a}^{m-1} = \mathbf{\dot{F}}^m_M(\mathbf{n}^m)(\mathbf{W}^{m+1})^T \mathbf{S}^{m+1} \mathbf{a}^{m-1}\\
+    \Delta \mathbf{b} &= \mathbf{S}^m = \mathbf{\dot{F}}^m_M(\mathbf{n}^m)(\mathbf{W}^{m+1})^T\mathbf{S}^{m+1}
+  \end{aligned}$$ or $$\begin{aligned}
+    \Delta \mathbf{W} &= \mathbf{S}^m\mathbf{a}^{m-1} = \mathbf{\dot{F}}^m_V(\mathbf{n}^m) \circ ((\mathbf{W}^{m+1})^T \mathbf{S}^{m+1})\cdot \mathbf{a}^{m-1}\\
+    \Delta \mathbf{b} &= \mathbf{S}^m = \mathbf{\dot{F}}^m_V(\mathbf{n}^m)\circ ((\mathbf{W}^{m+1})^T\mathbf{S}^{m+1})
+  \end{aligned}$$
+Now we officially finish the steepest gradient
+descent.
