@@ -14,15 +14,15 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://trivialfis.github.io" # the base hostname & protocol for your site
 twitter_username: ""
 github_username:  trivialfis
-paginate: 5
+google_analytics: UA-104056626-1
+paginate: 10
 
-# jekyll-paginate
-# plugins: [kramdown, jekyll-feed, jekyll-seo-tag, jekyll-sitemap]
-gems:
+plugins:
     - jekyll-feed
     - kramdown
     - jekyll-seo-tag
     - jekyll-sitemap
     - jekyll-paginate
+
 # Build settings
 markdown: kramdown
