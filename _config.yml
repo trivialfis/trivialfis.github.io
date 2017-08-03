@@ -21,12 +21,12 @@ github_username:  trivialfis
 google_analytics: UA-104056626-1
 paginate: 10
 
-plugins:
-    - jekyll-feed
-    - kramdown
-    - jekyll-seo-tag
-    - jekyll-sitemap
-    - jekyll-paginate
+gems:
+  - jekyll-feed
+  - kramdown
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-paginate
 
 
 # Build settings
