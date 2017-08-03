@@ -1,6 +1,7 @@
 ---
 layout: post
 title: What to complain about books
+category: Mumbo
 description: In my daily, I learn stuffs by reading various book. Some of these books are good for self-learners while the others are just misleading. 
 ---
 For some reasons, I find myself have difficulty with learning from class
