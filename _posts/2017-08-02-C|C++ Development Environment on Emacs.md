@@ -207,7 +207,7 @@ Another charming feature of `cmake-ide` is you can compile you configured cmake 
 
 So, after knowing what it does, to use it, we first need to set it up in our configuration script. Don't worry, it's quite straight forward. Add the function call to your `c++-mode-hook` like this:
 ```emacs-lisp
-(add-hook c++-mode-hook '(lambda()
+(add-hook 'c++-mode-hook '(lambda()
 		(cmake-ide-setup)
 		(trivialfis/local-set-keys
 			`("C-c C-a" . cmake-ide-compile)
