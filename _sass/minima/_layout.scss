@@ -5,6 +5,7 @@
   border-top: 5px solid $grey-color-dark;
   border-bottom: 1px solid $grey-color-light;
   min-height: $spacing-unit * 1.865;
+  // background-color: black;
 
   // Positioning context for the mobile navigation icon
   position: relative;
@@ -17,10 +18,11 @@
   letter-spacing: -1px;
   margin-bottom: 0;
   float: left;
-
+  // color: "#000000";
   &,
   &:visited {
-    color: $grey-color-dark;
+      color: $grey-color-dark;
+      // color: "#000000"
   }
 }
 
@@ -108,6 +110,8 @@
 .site-footer {
   border-top: 1px solid $grey-color-light;
   padding: $spacing-unit 0;
+  // color: $grey-color-light;
+  // background-color: black;
 }
 
 .footer-heading {
@@ -176,7 +180,8 @@
  * Page content
  */
 .page-content {
-  padding: $spacing-unit 0;
+    padding: $spacing-unit 0;
+    // margin-bottom: $spacing-unit;
 }
 
 .page-heading {

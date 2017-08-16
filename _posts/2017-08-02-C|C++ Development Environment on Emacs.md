@@ -16,6 +16,7 @@ description: A tutorial to help you set up Emacs for Modern C++ Integrated Devel
 - [Generating compilation database](#orgbd54f0d)
   - [What is compilation database](#orgdd8d1c2)
   - [Generate the database](#orgdbe0275)
+- [Things about cmake-ide](#cmake-ide)
 - [Using irony](#org5720fa8)
   - [What is irony](#org01604bc)
   - [Auto completion](#orgbbb15e6)
@@ -190,6 +191,35 @@ Compilation database is defined by the clang project. A compilation database is 
 
 With a cmake project, the Emacs package `cmake-ide` will generate the proper compilation base for us automatically. For other projects that doesn't come with cmake, we can use some help from the `bear` project to generate the required compilation database. Generating a compilation database for these project using `bear` are quite straight forward, just run `bear make` in the directory where you place your Makefile with system command shell.
 
+<a id="cmake-ide"></a>
+
+# Things about cmake-ide
+
+As mentioned above, `cmake-ide` can generate the compilation database automatically for us with the help of cmake(of course). There is more about this little package. It can set up many other Emacs packages for us. Here is a list of supported packages by `cmake-ide`, we will introduce some of them in the later sections:
+
+-   rtags
+-   flycheck
+-   auto-complete-clang
+-   company-clang
+-   irony
+
+Another charming feature of `cmake-ide` is you can compile you configured cmake project within Emacs by `M-x cmake-ide-compile`. I have binded the function to a key binding, which is showed in the code snippet in next paragraph.
+
+So, after knowing what it does, to use it, we first need to set it up in our configuration script. Don't worry, it's quite straight forward. Add the function call to your `c++-mode-hook` like this:
+```emacs-lisp
+(add-hook c++-mode-hook '(lambda()
+		(cmake-ide-setup)
+		(trivialfis/local-set-keys
+			`("C-c C-a" . cmake-ide-compile)
+		)))
+```
+This will ask Emacs to run the function `(cmake-ide-setup)` when entering `c++-mode-hook`. Then `cmake-ide` will configure everything for you. If you have every use cmake to compile some code, you know that the preferred way to compile the code is so called `out-source`. Which is just a fancy name for building the target object in a different directory other than the source code directory. So, how can you specify this directory for `cmake-ide`? One approach is to use `directory local variables` that Emacs uses. For detail about directory local variable of Emacs, please refer to the [official document](https://www.gnu.org/software/emacs/manual/html_node/elisp/Directory-Local-Variables.html).
+
+For our simple case, just create a file named `.dir-locals.el` in your project root (the outer most directory which containing everything about your current project), and then place the following snippet in the file which will tell `cmake-ide` to remember your build directory:
+```emacs-lisp
+((c++-mode . ((cmake-ide-build-dir . "path/to/your/project/build"))))
+```
+If you are sharing your project with others, don't pass this file to the shared repo, it will mess up others Emacs (assuming the people who work with you love Emacs as much as you do). I mentioned that `cmake-ide` is used to set up other Emacs packages based on your CMakeList.txt, but what it actually means is that `cmake-ide` will run cmake to generate a compilation database and then load it for the supported packages. I will introduce some of them in the following sections.
 
 <a id="org5720fa8"></a>
 
@@ -374,7 +404,9 @@ Used only for nevigation."
   (trivialfis/local-set-keys
    '(
      ("M-."     .  rtags-find-symbol-at-point)
-     ("M-,"     .  rtags-find-references-at-point)
+	 ("M-?"     .  rtags-find-references-at-point)
+     ("M-,"     .  rtags-location-stack-back)
+     ("C-,"   .    rtags-location-stack-forward)
      ("C-c r r" .  rtags-rename-symbolrtags-next-match)
      ))
   (add-hook 'kill-emacs-hook 'rtags-quit-rdm))
@@ -596,7 +628,7 @@ For Emacs, I doubt that there are many real experts. I can write some simple lis
 
 <!--  LocalWords:  bundler rebar scons sbt lein darcs VCS cmake cpp
  -->
-<!--  LocalWords:  Srefactor img RealGUD github IDE flycheck ecb
+<!--  LocalWords:  Srefactor img RealGUD github IDE flycheck ecb txt
  -->
-<!--  LocalWords:  eldoc
+<!--  LocalWords:  eldoc CMakeList repo dir ide rtags
  -->
