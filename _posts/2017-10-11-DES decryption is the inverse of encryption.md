@@ -2,7 +2,9 @@
 layout: post
 title: 展示 DES 解密过程实质是加密过程的逆过程。
 category: Mumbo
+description:
 ---
+
 # DES 与 Feistel Cipher Structure 的不同点
 DES是在 Feistel Cipher Structure (FCS) 基础上构建的加密算法。在加密过程中， DES在FCS开始前添加 Initial Permutation 和对原来 FCS 的输出添加了 逆向的 Initial Permutation。 同时，也通过circular shift 和 permute 实现了 SubKey 的生成。
 
