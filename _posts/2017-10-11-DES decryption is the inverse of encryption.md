@@ -12,7 +12,7 @@ DES是在 Feistel Cipher Structure (FCS) 基础上构建的加密算法。在加
 基于上述所说的不同点， 同时已知 FCS 本身解密是加密的逆过程，那么我们只要证明 DES 跟 FCS 的不同点不会对算法带来影响即可。
 
 ## Permutation
-首先展示 $IP$ 和 $IP^{-1}$ 不会对算法带来影响。 把 Permutation 操作看作一个由 Permutation Matrix 实现的线性变换， 由 Permutation Matrix 本身的性质可知 $PP^{-1} = I$， 也就是加密的 preoutput 和解密过程开始时经过 {% raw %} $P^{-1}$ {% endraw %} 的密文是一样的。
+首先展示 $IP$ 和 $IP^{-1}$ 不会对算法带来影响。 把 Permutation 操作看作一个由 Permutation Matrix 实现的线性变换， 由 Permutation Matrix 本身的性质可知 $PP^{-1} = I$， 也就是加密的 preoutput 和解密过程开始时经过 {% raw %} $$P^{-1}$$ {% endraw %} 的密文是一样的。
 
 ## Subkey
 然后是 SubKey 的生成。先对 circular shift 进行讨论。 加密时进行正向的 circular shift， 解密时进行反向 circular shift。 而解密时初始化使用的是加密过程最后一个 round 的密钥。所以加密和解密过程中每个 round 所对应的密钥是一样的。 然后到 SubKey 生成中使用的 permutation。既然每个 round 使用的是同一条密钥，而 permutation 的方法也一样，生成的 Subkey 自然也就一样了。
