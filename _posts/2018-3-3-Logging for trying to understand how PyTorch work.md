@@ -11,4 +11,6 @@ description: I'm that dumb.
 
 2018-03-03
 
-	Finally understand that the implementation code is generated, other than written by human.
+	Finally understand that the implementation code is generated, rather than written by human.
+	
+	Improved the class hierarchy graph.
