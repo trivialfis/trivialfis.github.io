@@ -14,3 +14,5 @@ description: I'm that dumb.
 	Finally understand that the implementation code is generated, rather than written by human.
 	
 	Improved the class hierarchy graph.
+
+	Have an intuition for how's it binded to Python.
