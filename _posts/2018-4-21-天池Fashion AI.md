@@ -90,9 +90,10 @@ Regression 不行，那咱就来 classification 呗。于是我做了 Convolutio
 
 3. 抽取出来的图片精度不够，例如我可能希望它抽取上衣，它很可能把裙子也弄进来了，等于没抽取。
 
-4. 增加了复杂度。这样子训练就是两个阶段了。对于训练预测模型，你先要通过标准答案里面的关键点对训练样本进行物体抽取，然后在训练预测模型。在inference阶段，你要先通过 rcnn 对测试样本进行抽取再进行预测。注意，这两种抽取的结果是不会一样的，除非你的rcnn能训练到100的准确率。也就是说，你的预测模型在训练阶段和预测阶段面对的两个数据集并非独立同分布，起码不是同分布。
+4. 增加了复杂度。这样子训练就是两个阶段了。对于训练预测模型，你先要通过标准答案里面的关键点对训练样本进行物体抽取，然后再拿抽取结果凑成样本集训练预测模型。而在inference阶段，你要先通过 rcnn 对测试样本进行抽取再进行预测。注意，这两种抽取的结果是不会一样的， 一个通过标准答案里面的 key-points, 另外一个通过 rcnn, 除非你的 rcnn 能训练到100的准确率。也就是说，你的预测模型在训练阶段和预测阶段面对的两个数据集并非独立同分布，起码不可能做到同分布。
 
 ![Loss-keypoint]({{ site.url }}/assets/Tianchi-Fashion-AI/loss-keypoint.jpg "RCNN Crop 关键点丢失")
+关键点丢失
 
 
 # 数据预处理和清洗
@@ -124,7 +125,7 @@ Regression 不行，那咱就来 classification 呗。于是我做了 Convolutio
 
 # 谢谢
 
-GitHub page 添加评论好麻烦，用 discuz 做评论窗口要通过*科学*的方式，也是给别人添堵。有什么问题/指正/意见/建议/灌水，直接给个issue就行了。怎么说GitHub是全球最大的xxxx交友平台。
+GitHub page 添加评论好麻烦，用 discuz 做评论窗口要通过*科学*的方式，也是给别人添堵。有什么问题/指正/意见/建议/灌水，直接给个issue就行了。怎么说GitHub是全球最大的xxxx交友平台。 Thanks for your time.
 
-<!--  LocalWords:  Convolutional softmax sigmoid png
+<!--  LocalWords:  Convolutional softmax sigmoid png rcnn
  -->
