@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 天池Fashion AI 比赛失败经历分享。
+title: 天池 Fashion AI 比赛失败经历分享。
 category: Machine Learning
 description: I'm that dumb.
 ---
@@ -37,7 +37,7 @@ description: I'm that dumb.
 
 ## Deeppose
 
-根据上面第一条，我们不需要考虑多人的情况。那最简单粗暴的方法就是对所有关键点x, y坐标进行regression。再怎么不济也会有个结果，对吧？于是我一开始直接上了14年Google大神弄出来的deeppose模型。主要思想就是给每张图片定义一个bounding box，这个bounding box可以是一个绕着衣服的框框，也可以是整张图片。然后计算每个关键点跟这个bounding box的相对位置，最后用bounding box的长和宽对这些相对位置进行 normalization。得出来的结果就是模型训练的目标。这是应该是最粗暴的regression模型了。
+根据上面第一条，我们不需要考虑多人的情况。那最简单粗暴的方法就是对所有关键点x, y坐标进行regression。再怎么不济也会有个结果，对吧？于是我一开始直接上了14年Google大神弄出来的deeppose模型。主要思想就是给每张图片定义一个bounding box，这个bounding box可以是一个绕着衣服的框框，也可以是整张图片。然后计算每个关键点跟这个bounding box的相对位置，最后用bounding box的长和宽对这些相对位置进行 normalization。得出来的结果就是模型训练的目标。这应该是最粗暴的regression模型了。
 
 然而现实却是很骨感的，我分别尝试了以下几个模型作为基模型来构建 deeppose:
 
@@ -53,7 +53,7 @@ description: I'm that dumb.
 
 ## Convolutional pose machine
 
-Regression 不行，那咱就来 classification 呗。于是我做了 Convolutional pose machine。 之前没有接触过这玩意儿，这里也是看完论文现学现卖。模型的输出是k张 believe map， k 是关键点的数量。大小可以自定义。我设定是32x32，也尝试过64x64，但这个不是重点，误差的来源主要不在于这里。这个 believe map 需要通过 softmax 来生成。我一开始脑子有点抽，给每一个输出像素点作 sigmoid 输出，也就是说一开始我的模型输出层是一个32x32的 sigmoid 张量。 结果就是所有的 sigmoid 都输出0，掉进了local minimum。后来一拍脑门，才想到要用 softmax, 一个函数对应 $R^{32x32}$ 的输出张量，这样才能强制模型输出0之外的数。
+Regression 不行，那咱就来 classification 呗。于是我做了 Convolutional pose machine。 之前没有接触过这玩意儿，这里也是看完论文现学现卖。模型的输出是 k+1 张 believe map， k 是关键点的数量, +1 是背景类。大小可以自定义。我设定是32x32，也尝试过64x64，但这个不是重点，误差的来源主要不在于这里。这个 believe map 需要通过 softmax 来生成。我一开始脑子有点抽，给每一个输出像素点作 sigmoid 输出，也就是说一开始我的模型输出层是一个32x32的 sigmoid 张量。 结果就是所有的 sigmoid 都输出0，掉进了local minimum。后来一拍脑门，才想到要用 softmax, 一个函数对应 $R^{32x32}$ 的输出张量，这样才能强制模型输出0之外的数。
 
 那么按照套路来，我又尝试了上面 deeppose 里面用的几个基模型，这里分享各个模型对应的问题：
 
@@ -66,8 +66,8 @@ Regression 不行，那咱就来 classification 呗。于是我做了 Convolutio
 那这样子也不是个办法，于是我又尝试了 **DenseNet**： 这回结果好了很多。我做了 DenseNet-169 和 DenseNet-201，两个效果差不多，又或者只是因为我没有时间去调。反正这是我在上述尝试里面获得最好的结果了，进入复赛的同学们如果用了别的模型可以尝试一下DenseNet，下面随便找了几张预测图:
 
 ![prediction-0]({{ site.url }}/assets/Tianchi-Fashion-AI/ok-0.png)
-![prediction-0]({{ site.url }}/assets/Tianchi-Fashion-AI/ok-1.png)
-![prediction-0]({{ site.url }}/assets/Tianchi-Fashion-AI/ok-2.png)
+![prediction-1]({{ site.url }}/assets/Tianchi-Fashion-AI/ok-1.png)
+![prediction-2]({{ site.url }}/assets/Tianchi-Fashion-AI/ok-2.png)
 
 
 ## Faster RCNN
