@@ -127,7 +127,7 @@ Regression 不行，那咱就来 classification 呗。于是我做了 Convolutio
 
 # 谢谢
 
-GitHub page 添加评论好麻烦，用 discuz 做评论窗口要通过*科学*的方式，也是给别人添堵。有什么问题/指正/意见/建议/灌水，直接给个issue就行了。怎么说GitHub是全球最大的xxxx交友平台。最后，希望大家玩的开心。 Thanks for your time.
+有什么问题/指正/意见/建议/灌水，直接给个issue 或者评论都行（ disqus ）。怎么说GitHub是全球最大的xxxx交友平台。最后，希望大家玩的开心。 Thanks for your time.
 
 <!--  LocalWords:  Convolutional softmax sigmoid png rcnn
  -->
