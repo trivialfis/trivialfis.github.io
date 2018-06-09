@@ -7,25 +7,27 @@ description: Using Guix for creating development environment.
 
 # Introduction
 
-If you haven't heard about GNU Guix, quoting from official site, it's GNU's advanced transactional package manager. You can obtain it in the [official site](https://www.gnu.org/software/guix/). There are many merits in Guix that can empower it's user. One of my favorite is using it to construct an isolated development environment. Underlying, Guix is a packages management system, just like `dnf/yum` from Fedora/CentOS, or `apt` from Debian. But Guix comes with support for transactional upgrades and roll-backs. And further, it's a functional packages management system, which means given a same set of packages as dependencies(input), it will have the same package as output. If you heard about functional programming, you should have a pretty good idea about what I'm talking. But today, I wanna demonstrate how to use Guix for constructing a development environment. Unlike virtualenv from python, Guix doesn't limit the usage of languages, nor does it need to make copy for needed packages. You told Guix what do you need, and Guix give it to you. If the packages are previously downloaded or built in your device, Guix can reuse it, no need for duplication.
+If you haven't heard about GNU Guix, quoting from official site, it's GNU's advanced transactional package manager. You can obtain it from the [official site](https://www.gnu.org/software/guix/). There are many merits in Guix that can empower it's user. One of my favorite is using it to construct an isolated development environment. Underlying, Guix is a packages management system, just like `dnf/yum` from Fedora/CentOS, or `apt` from Debian. But Guix comes with support for transactional upgrades and roll-backs. And further, it's a functional packages management system, which means given a same set of packages as dependencies(input), it will have the same package as output. If you heard about functional programming, you should have a pretty good idea about what I'm talking. But today, I wanna demonstrate how to use Guix for constructing a development environment. Unlike virtualenv from python, Guix doesn't limit the usage of languages, nor does it need to make copy for needed packages. You told Guix what do you need, and Guix give it to you. If the packages are previously downloaded or built in your device, Guix can reuse it, no need for duplication.
 
 I will use the phase "Here is how I do it with guix" through the rest of this tutorial. The phase simply means I'm not the official reference, my method could be wrong, due to my own mistake of changes in guix.
 
 # First example `--ad-hoc`
 
-Well, this article is about demonstration, not reference, so you won't get any detailed reference. Instead, you get examples. Imagine that someday, you need to work on a python based project called **foo**, which uses `numpy` for matrix calculation, you would first make an empty directory, possibly use `virtualenv` to copy your python distribution into this directory, then install `numpy`.
+Well, this article is about demonstration, not reference. So you won't get any detailed reference. Instead, you get examples.
+
+Imagine that someday, you need to work on a python based project called **foo**, which uses `numpy` for matrix calculation, you would first make an empty directory, possibly use `virtualenv` to copy your python distribution into this directory, then install `numpy`.
 
 So here is how I do it in Guix. For our **foo** example, first, `chdir` to your project directory, enter:
 
 	`guix environment --ad-hoc python python-numpy`
 
-With the above command, you will see messages about Guix download or building `python` and `numpy`, then you will enter a new shell with these two particular packages available. Try `import numpy` with python3(not python, it's python3) in that shell, you will see that it's now available for you. The `--ad-hoc` argument means that you want `python` and `python-numpy` as immediate packages. Without this argument, Guix will give you the dependencies of `python` and `numpy`, which are those packages needed for compiling `python` and `numpy`. You don't want to compile them, rather, you want to use them for your project, hence the `--ad-hoc` argument.
+With the above command, you will see messages about Guix downloading or building `python` and `numpy`, then you will enter a new shell with these two particular packages available. Try `import numpy` with python3(not python, it's python3) in that shell, as you will see, it's available for you now. The `--ad-hoc` argument means that you want `python` and `python-numpy` as immediate packages. Without this argument, Guix will give you the dependencies of `python` and `numpy`, which are those packages needed for compiling `python` and `numpy`. You don't want to compile them, rather, you want to use them for your project, hence the `--ad-hoc` argument.
 
 You can also add `--pure` argument to the above command:
 
 	`guix environment --ad-hoc python python-numpy --pure`
 
-In this case, Guix will remove all existing environment variables predefined in your shell. Which meas the new environment is **pure**. You won't be able to access any existing commands in your system except for `python3`. That sounds weird at first, why would anyone do that? Well, actually it's a good thing, and sometimes it's a must. Without `--pur`, the `python` offered by Guix could accidentally access `site-packages` from your original system path, which could cause problems due to mismatched versions. And it won't be an isolated environment anymore. In short, `--pure` ensures the needed packages work as intended and the reproducibility of your project.
+In this case, Guix will remove all existing environment variables predefined in your shell. Which means the new environment is **pure**. You won't be able to access any existing commands in your system except for `python3`. That sounds weird at first, why would anyone do that? Well, actually it's a good thing, and sometimes it's a must. Without `--pure`, the `python` offered by Guix could accidentally access `site-packages` from your original system path, which could cause problems due to mismatched versions. And it won't be an isolated environment anymore. In short, `--pure` ensures the needed packages work as intended and the reproducibility of your project.
 
 When you are done. You can exit this shell like any other terminal shell, enter `Ctrl-D` or `exit`. The rest of your system won't be changed in anyway.
 
@@ -43,15 +45,15 @@ The path is hashed, remember when I said that Guix is a functional packages mana
 
 # Second example
 
-Having `numpy` and `python`  doesn't mean you would start writing python code immediately, you need helper tools. Like `flake8` for syntax check, `yapf` for code structuring etc. So you would install them as well. For one python project, that's probably ok, what if you have several? Or even worse, what if you just want to read others source code to learn some implementations? Do you setup such an environment for each project? I would rather not. Ok, now, what if someday you want to see what's under the hook of `autograd` (an implementation for auto gradient written in python). Then you need all its dependencies, helper tools, since you don't want to read other's code without code jumping tools right? Here is how I do it with Guix when I first meet
+Having `numpy` and `python`  doesn't mean you would start writing python code immediately, you need helper tools. Like `flake8` for syntax check, `yapf` for code structuring etc. So you would install them as well. For one python project, that's probably ok, what if you have several? Or even worse, what if you just want to read others source code to learn some implementations? Do you setup such an environment for each project? I would rather not. Ok, now, what if someday you want to see what's under the hook of `autograd` (an implementation for auto gradient written in python). Then you need all its dependencies, helper tools, since you don't want to read other's code without code jumping tools right? Here is how I do it with Guix:
 
 	`guix environment python-autograd --ad-hoc python python-flake8 python-autopep8 python-yapf emacs --pure`
 
-The command line is long, but don't worry, we will have more convenient methods later. I put `python-autograd` before `--ad-hoc`, so that all its dependencies will be in position (but not `autograd` itself) as explained in first example. This way, when you jump around the code, you can jump to the packages that `autograd` uses as well. My Emacs has proper configuration for python which makes uses of `flake8`, `autopep8` and `yapf`. So I put them after `--ad-hoc`, as also explained in the first example. In the newly spawned shell, open Emacs (or any other text editor packaged in Guix and specified in `guix enviornment --ad-hoc`), then you can start reading the source code of `autograd` without polluting your system environment.
+The command line is long, but don't worry, we will have more convenient method later. I put `python-autograd` before `--ad-hoc`, so that all its dependencies will be in position (but not `autograd` itself) as explained in first example. This way, when you jump around the code, you can jump to the packages that `autograd` uses as well. My Emacs has proper configuration for python which makes uses of `flake8`, `autopep8` and `yapf`. So I put them after `--ad-hoc`, as also explained in the first example. In the newly spawned shell, open Emacs (or any other text editor packaged in Guix and specified in `guix enviornment --ad-hoc`), then you can start reading the source code of `autograd` without polluting your system environment.
 
 # Third example `--manifest`
 
-We can't finish our project in one day. Also, we don't want to specify these packages every time we need this environment. How do we do it? The first thing we do, is invoke `guix environment` with `--manifest` argument. You can write down your needed package in a file possibly named "foo-mainfest.scm" like this one:
+We can't finish our project in one day. Also, we don't want to specify these packages every time we need this environment. How do we do it? The first thing we do, is invoking `guix environment` with `--manifest` argument. You can write down your needed package in a file possibly named "foo-mainfest.scm" like this one:
 
 ``` scheme
 	(specifications->manifest
@@ -78,19 +80,23 @@ With this command, at the same time of creating an environment, guix also adds a
 
 # Fourth example `--container`
 
-What if we want to install the project we are working on, but still don't want to pollute the environment? That's the real world, right? We tried to modify some software while at the same time we are using it. That the job for `--container`. Continuing our **foo** example, here is how I do it with Guix:
+What if we want to install the project we are working on, but still don't want to pollute the environment? That's the real world, right? We tried to modify some software while at the same time we are using them. That the job for `--container`. Continuing our **foo** example, here is how I do it with Guix:
 
 	`guix environment --ad-hoc python python-numpy --container`
 
-In this way, guix will create a environment with changed root. Which means you won't be able to see any files other than those within your working directory and its sub-directories. Within this shell, you have root privilege. You can install the project as you would without polluting your system thanks to the changed root. But after exiting the environment, you need to call `guix gc -d <path to that profile>` to clean up your installation, so that it won't waste your storage space. An caveat is that you need to re-install your project every time you create the environment. To me it's not a big deal, since that's the point of creating a contained environment, used only during development and the project is re-installed frequently for testing purpose.
+In this way, guix will create a environment with changed root. Which means you won't be able to see any files other than those within your working directory and its sub-directories. Within this shell, you have root privilege. You can install the project as you would without polluting your system thanks to the changed root. But after exiting the environment, you need to call
+
+	`guix gc -d <path to that profile>`
+
+to clean up your installation, so that those installed files won't waste your storage space. An caveat is that you need to re-install your project every time you create the environment. To me it's not a big deal, since that's the point of creating a contained environment, used only during development and the project is re-installed frequently for testing purpose.
 
 # With GUI support.
 
-Currently, I'm running Guix on top of Fedora, my default desktop environment is Gnome. You might have noticed that the shell spawned by `guix environment` is just a text shell. It's powerful but still, we might miss the convenience brought by a GUI shell, like opening random files with simple clicks. Spawning a GUI shell is much more complex, which Guix doesn't support. But lucky for us, there's a simple work around. You can just make the file manager as an ad-hoc package. In my case, it's nautilus. If you are using other desktop environment, choose the corresponding one. Currently Guix supports Xfce and Gnome. After spawning the new environment with `guix environment --ad-hoc nautilus <packages...>`, simply enter nautilus (or the name of your favorite file manager) in the newly created shell, the file manager window should pop out. In such a case, this window is contained within the guix shell. If you open a file with emacs in this window, Emacs can access any packages you have specified, and with corresponding environment variable set.
+Currently, I'm running Guix on top of Fedora, my default desktop environment is Gnome. You might have noticed that the shell spawned by `guix environment` is just a text shell. It's powerful but still, we might miss the convenience brought by a GUI shell, like opening random files with simple clicks. Spawning a GUI shell is much more complex, which Guix doesn't support. But lucky for us, there's a simple work around. You can just make the file manager as an ad-hoc package. In my case, it's nautilus. If you are using other desktop environment, choose the corresponding one. Currently Guix supports Xfce and Gnome. After spawning the new environment with `guix environment --ad-hoc nautilus <packages...>`, simply enter nautilus (or the name of your favorite file manager) in the newly created shell, the file manager window should pop out. In such a case, this window is contained within the guix shell. If you open a file with emacs in this window, Emacs can access any packages you have specified, and with corresponding environment variable set. It's worth noting that you can't use this work around with `--container` option, nautilus won't be able to connect to your desktop environment with changed root.
 
 # Another caveat
 
-After specifying an environment, you can't change it without leaving that environment. The environment is hashed based on it's packages, if you add or remove a package, the environment is changed, which means another environment is created. You can't have a same hash code with two different environments.
+After specifying an environment, you can't change it without leaving that environment. The environment is hashed based on it's packages. If you add or remove a package, the environment is changed, which means another environment is created. You can't have a same hash code with two different environments.
 
 # Sample union packages.
 
@@ -108,11 +114,11 @@ It means `python-autograd` is defined in file **machine-learning.scm**. Then `ma
 
 # Further reading
 
-Anyway, Guix is a powerful package management system. Here I'm only scratching the surface. Try to read more at the [official documentation](https://www.gnu.org/software/guix/manual/guix.html). If you like some more tutorial, there's an [official blog](https://www.gnu.org/software/guix/blog/) containing many interesting usages of Guix. Enjoy.
+Anyway, Guix is a powerful package management system. Here I'm only scratching the surface. Try to read more at the [official documentation](https://www.gnu.org/software/guix/manual/guix.html). If you like some more tutorial, there's an [official blog](https://www.gnu.org/software/guix/blog/) containing many interesting use cases. Enjoy.
 
 # Conclusion
 
-I hope this blog post provides some intuition about using guix to ease your development. Guix provides `guix environment` command you can utilize to make different environment to suite your project's needs.
+I hope this blog post provides some intuition about using guix to ease your development. Guix provides `guix environment` command you can utilize to make different environments to suite your own needs.
 
 # About GNU Guix
 
