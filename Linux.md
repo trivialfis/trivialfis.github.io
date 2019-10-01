@@ -1,7 +1,7 @@
 ---
 layout: archive
-title: GNU/Linux
-permalink: /GNU_LINUX/
+title: Linux
+permalink: /LINUX/
 category: Linux
 tagline: GNU System
 ---
